@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Domain\Validators\**" />
+    <Compile Remove="Task\**" />
+    <Compile Remove="Tests\**" />
+    <Content Remove="Domain\Validators\**" />
+    <Content Remove="Task\**" />
+    <Content Remove="Tests\**" />
+    <EmbeddedResource Remove="Domain\Validators\**" />
+    <EmbeddedResource Remove="Task\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Domain\Validators\**" />
+    <None Remove="Task\**" />
+    <None Remove="Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="!All.cmd" />
+    <None Remove="!CreateMigration.cmd" />
+    <None Remove="!UpdateDB.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
+  </ItemGroup>
+
+</Project>
