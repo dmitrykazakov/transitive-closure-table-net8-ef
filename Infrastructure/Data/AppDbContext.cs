@@ -3,16 +3,28 @@ using TransitiveClosureTable.Domain.Entities;
 
 namespace TransitiveClosureTable.Infrastructure.Data;
 
+/// <summary>
+/// Entity Framework DbContext for the Transitive Closure Table system.
+/// Manages Trees, Nodes, TransitiveClosures, and ExceptionJournals.
+/// </summary>
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
+    /// <summary>DbSet for <see cref="Tree"/> entities.</summary>
     public DbSet<Tree> Trees { get; set; }
 
+    /// <summary>DbSet for <see cref="Node"/> entities.</summary>
     public DbSet<Node> Nodes { get; set; }
 
+    /// <summary>DbSet for <see cref="TransitiveClosure"/> entities.</summary>
     public DbSet<TransitiveClosure> TransitiveClosures { get; set; }
 
+    /// <summary>DbSet for <see cref="ExceptionJournal"/> entities.</summary>
     public DbSet<ExceptionJournal> ExceptionJournals { get; set; }
 
+    /// <summary>
+    /// Configures entity relationships, keys, constraints, and indexes.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder instance.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -33,6 +45,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(n => n.Id).HasColumnOrder(0);
             entity.Property(n => n.TreeId).HasColumnOrder(1);
             entity.Property(n => n.Name).IsRequired().HasMaxLength(256).HasColumnOrder(2);
+
             entity.HasOne(n => n.Tree)
                   .WithMany(t => t.Nodes)
                   .HasForeignKey(n => n.TreeId)
@@ -42,25 +55,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         // --- TransitiveClosure ---
         modelBuilder.Entity<TransitiveClosure>(entity =>
         {
-            // Composite PK
+            // Composite primary key
             entity.HasKey(tc => new { tc.AncestorId, tc.DescendantId });
             entity.Property(tc => tc.TreeId).HasColumnOrder(0);
             entity.Property(tc => tc.AncestorId).HasColumnOrder(1);
             entity.Property(tc => tc.DescendantId).HasColumnOrder(2);
             entity.Property(tc => tc.Depth).HasColumnOrder(3).IsRequired();
 
-            // FKs to Node
+            // Foreign key to Ancestor node
             entity.HasOne(tc => tc.Ancestor)
                   .WithMany()
                   .HasForeignKey(tc => tc.AncestorId)
                   .OnDelete(DeleteBehavior.Restrict);
 
+            // Foreign key to Descendant node
             entity.HasOne(tc => tc.Descendant)
                   .WithMany()
                   .HasForeignKey(tc => tc.DescendantId)
                   .OnDelete(DeleteBehavior.Restrict);
 
-            // FK to Tree for tree independence
+            // Foreign key to Tree for tree isolation
             entity.HasOne(tc => tc.Tree)
                   .WithMany(t => t.TransitiveClosures)
                   .HasForeignKey(tc => tc.TreeId)
@@ -72,5 +86,4 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(tc => tc.TreeId);
         });
     }
-
 }

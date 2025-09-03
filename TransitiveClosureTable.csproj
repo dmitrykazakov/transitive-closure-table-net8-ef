@@ -8,13 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Domain\Validators\**" />
-    <Compile Remove="Tests\**" />
+    <Compile Remove="Migrations\**" />
     <Content Remove="Domain\Validators\**" />
-    <Content Remove="Tests\**" />
+    <Content Remove="Migrations\**" />
     <EmbeddedResource Remove="Domain\Validators\**" />
-    <EmbeddedResource Remove="Tests\**" />
+    <EmbeddedResource Remove="Migrations\**" />
     <None Remove="Domain\Validators\**" />
-    <None Remove="Tests\**" />
+    <None Remove="Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
