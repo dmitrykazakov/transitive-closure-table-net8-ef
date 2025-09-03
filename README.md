@@ -41,7 +41,7 @@ It demonstrates **Domain-Driven Design (DDD)**, robust error handling, cross-dat
 - **Application/** – Service layer with contracts and implementations.
 - **Infrastructure/** – EF Core context, repositories, factories, and Unit of Work.
 - **Middleware/** – Custom ASP.NET Core middleware for global exception handling.
-- **WebApi/** – Controllers and API entry point.
-- **Tests/** – Unit tests for domain and infrastructure logic.
+- **Presentation/** – Controllers and API entry point.
+- **TransitiveClosureTable.Tests/** – Unit tests for domain and infrastructure logic.
 
 ---
