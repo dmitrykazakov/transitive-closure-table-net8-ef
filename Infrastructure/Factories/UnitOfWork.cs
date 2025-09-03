@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using TransitiveClosureTable.Infrastructure.Data;
 using TransitiveClosureTable.Infrastructure.Data.Repositories;
 using TransitiveClosureTable.Infrastructure.Data.Repositories.Contracts;

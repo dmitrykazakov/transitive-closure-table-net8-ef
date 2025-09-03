@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using TransitiveClosureTable.Application.Services.Contracts;
 using TransitiveClosureTable.Domain.Entities;
 
-namespace TransitiveClosureTable.WebAPI.Controllers;
+namespace TransitiveClosureTable.Presentation.Controllers;
 
 [ApiController]
 [SwaggerTag("Represents tree node API")]

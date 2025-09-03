@@ -17,28 +17,60 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<TransitiveClosure>()
-            .HasKey(tc => new { tc.AncestorId, tc.DescendantId });
+        // --- Tree ---
+        modelBuilder.Entity<Tree>(entity =>
+        {
+            entity.HasKey(t => t.Id);
+            entity.Property(t => t.Id).HasColumnOrder(0);
+            entity.Property(t => t.Name).IsRequired().HasMaxLength(256).HasColumnOrder(1);
+            entity.HasIndex(t => t.Name).IsUnique();
+        });
 
-        modelBuilder.Entity<TransitiveClosure>()
-            .HasOne(tc => tc.Ancestor)
-            .WithMany()
-            .HasForeignKey(tc => tc.AncestorId)
-            .OnDelete(DeleteBehavior.Restrict);
+        // --- Node ---
+        modelBuilder.Entity<Node>(entity =>
+        {
+            entity.HasKey(n => n.Id);
+            entity.Property(n => n.Id).HasColumnOrder(0);
+            entity.Property(n => n.TreeId).HasColumnOrder(1);
+            entity.Property(n => n.Name).IsRequired().HasMaxLength(256).HasColumnOrder(2);
+            entity.HasOne(n => n.Tree)
+                  .WithMany(t => t.Nodes)
+                  .HasForeignKey(n => n.TreeId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
 
-        modelBuilder.Entity<TransitiveClosure>()
-            .HasOne(tc => tc.Descendant)
-            .WithMany()
-            .HasForeignKey(tc => tc.DescendantId)
-            .OnDelete(DeleteBehavior.Restrict);
+        // --- TransitiveClosure ---
+        modelBuilder.Entity<TransitiveClosure>(entity =>
+        {
+            // Composite PK
+            entity.HasKey(tc => new { tc.AncestorId, tc.DescendantId });
+            entity.Property(tc => tc.TreeId).HasColumnOrder(0);
+            entity.Property(tc => tc.AncestorId).HasColumnOrder(1);
+            entity.Property(tc => tc.DescendantId).HasColumnOrder(2);
+            entity.Property(tc => tc.Depth).HasColumnOrder(3).IsRequired();
 
-        modelBuilder.Entity<Node>()
-            .HasOne(n => n.Tree)
-            .WithMany(t => t.Nodes)
-            .HasForeignKey(n => n.TreeId);
+            // FKs to Node
+            entity.HasOne(tc => tc.Ancestor)
+                  .WithMany()
+                  .HasForeignKey(tc => tc.AncestorId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Tree>()
-            .HasIndex(t => t.Name)
-            .IsUnique();
+            entity.HasOne(tc => tc.Descendant)
+                  .WithMany()
+                  .HasForeignKey(tc => tc.DescendantId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            // FK to Tree for tree independence
+            entity.HasOne(tc => tc.Tree)
+                  .WithMany(t => t.TransitiveClosures)
+                  .HasForeignKey(tc => tc.TreeId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            // Indexes for performance
+            entity.HasIndex(tc => tc.AncestorId);
+            entity.HasIndex(tc => tc.DescendantId);
+            entity.HasIndex(tc => tc.TreeId);
+        });
     }
+
 }

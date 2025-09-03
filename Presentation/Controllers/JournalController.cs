@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace TransitiveClosureTable.WebAPI.Controllers;
+namespace TransitiveClosureTable.Presentation.Controllers;
 
 [ApiController]
 [SwaggerTag("Represents journal API")]

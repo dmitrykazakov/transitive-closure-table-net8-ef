@@ -1,12 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TransitiveClosureTable.Domain.Entities;
 
 public class Node
 {
-    [Key] public required long Id { get; set; }
+    [Key]
+    public int Id { get; set; }
+    public int TreeId { get; set; } 
+    public required string Name { get; set; }
 
-    [MaxLength(100)] public required long TreeId { get; set; }
+    public Tree? Tree { get; set; }
 
-    public required Tree Tree { get; set; }
+    // Not persisted — only used in memory
+    [NotMapped] public List<Node> Children { get; set; } = [];
 }

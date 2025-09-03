@@ -1,8 +1,8 @@
-﻿using TransitiveClosureTable.Domain.Entities;
+﻿using TransitiveClosureTable.Application.Dto;
 
 namespace TransitiveClosureTable.Application.Services.Contracts;
 
 public interface ITreeService
 {
-    Task<Tree> GetOrCreateAsync(string name);
+    Task<TreeDto> GetOrCreateAsync(string name);
 }

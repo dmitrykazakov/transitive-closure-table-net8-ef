@@ -2,7 +2,7 @@
 using Swashbuckle.AspNetCore.Annotations;
 using TransitiveClosureTable.Application.Services.Contracts;
 
-namespace TransitiveClosureTable.WebAPI.Controllers;
+namespace TransitiveClosureTable.Presentation.Controllers;
 
 [ApiController]
 [SwaggerTag("Represents entire tree API")]

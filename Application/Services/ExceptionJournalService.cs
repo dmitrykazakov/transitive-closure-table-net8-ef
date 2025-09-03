@@ -10,29 +10,20 @@ public class ExceptionJournalService(IUnitOfWorkFactory unitOfWorkFactory) : IEx
     {
         using var unitOfWork = unitOfWorkFactory.Create();
 
-        var entry = new ExceptionJournal
+        var exceptionJournal = new ExceptionJournal
         {
             Timestamp = DateTime.UtcNow,
             QueryParams = context.Request.QueryString.HasValue ? context.Request.QueryString.Value : "",
-            BodyParams = await ReadRequestBodyAsync(context),
+            BodyParams = context.Items["RequestBody"] as string ?? string.Empty,
             StackTrace = ex.StackTrace ?? "",
             ExceptionType = ex.GetType().Name
         };
 
-        await unitOfWork.ExceptionJournals.AddAsync(entry);
+        await unitOfWork.ExceptionJournals.AddAsync(exceptionJournal);
 
         await unitOfWork.CommitAsync();
 
-        //await repositoryFactory.CreateExceptionJournalRepository().AddAsync(entry);
-        return entry;
+        return exceptionJournal;
     }
 
-    private static async Task<string> ReadRequestBodyAsync(HttpContext context)
-    {
-        context.Request.EnableBuffering();
-        using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
-        var body = await reader.ReadToEndAsync();
-        context.Request.Body.Position = 0;
-        return body;
-    }
 }

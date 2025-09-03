@@ -2,13 +2,11 @@
 
 public class TransitiveClosure
 {
-    public long AncestorId { get; set; }
-
-    public long DescendantId { get; set; }
-
-    public int Depth { get; set; }
-
-    public Tree? Ancestor { get; set; }
-
-    public Tree? Descendant { get; set; }
+    public int TreeId { get; set; }      
+    public Tree? Tree { get; set; }
+    public int AncestorId { get; set; }  
+    public Node? Ancestor { get; set; }
+    public int DescendantId { get; set; }
+    public Node? Descendant { get; set; }
+    public int Depth { get; set; } 
 }

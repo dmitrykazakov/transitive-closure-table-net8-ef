@@ -1,22 +1,24 @@
-﻿using TransitiveClosureTable.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TransitiveClosureTable.Domain.Entities;
 using TransitiveClosureTable.Infrastructure.Data.Repositories.Contracts;
 
 namespace TransitiveClosureTable.Infrastructure.Data.Repositories;
 
 public class NodeRepository(AppDbContext appDbContext) : INodeRepository
 {
-    public Task<Node> GetByIdAsync(int id)
+    public async Task<Node> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await appDbContext.Nodes.SingleAsync(n => n.Id == id);
+    }
+    public async Task DeleteAsync(Node node)
+    {
+        appDbContext.Nodes.Remove(node);
+        await appDbContext.SaveChangesAsync();
     }
 
-    public Task<Node> GetChildrenAsync(int id)
+    public async Task AddAsync(Node node)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(Node node)
-    {
-        throw new NotImplementedException();
+        await appDbContext.Nodes.AddAsync(node);
+        await appDbContext.SaveChangesAsync();
     }
 }

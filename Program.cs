@@ -7,11 +7,11 @@ using TransitiveClosureTable.Infrastructure.Factories.Contracts;
 using TransitiveClosureTable.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
-var useSqlServer = builder.Configuration.GetValue<bool>("UseSqlServer");
+var database = builder.Configuration.GetValue<string>("Database");
 
 builder.Services.AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>();
 
-if (useSqlServer)
+if (database == "SqlServer")
 {
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection")));
@@ -20,7 +20,7 @@ if (useSqlServer)
 else
 {
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection")));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
     builder.Services.AddScoped<IAppFactory, PostgresAppFactory>();
 }
 
@@ -40,6 +40,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<RequestBufferingMiddleware>();
 app.UseErrorHandlingMiddleware();
 
 
