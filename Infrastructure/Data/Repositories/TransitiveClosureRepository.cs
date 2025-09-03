@@ -23,6 +23,23 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
             .ToListAsync();
     }
 
+    // Delete a single closure row
+    public async Task DeleteAsync(TransitiveClosure? closure)
+    {
+        if (closure == null)
+            return;
+
+        appDbContext.TransitiveClosures.Remove(closure);
+        await appDbContext.SaveChangesAsync();
+    }
+
+    public async Task<List<TransitiveClosure>> GetAllByNodeIdAsync(int nodeId)
+    {
+        return await appDbContext.TransitiveClosures
+            .Where(tc => tc.DescendantId == nodeId || tc.AncestorId == nodeId)
+            .ToListAsync();
+    }
+
     // Add a closure row
     public async Task AddAsync(TransitiveClosure transitiveClosure)
     {

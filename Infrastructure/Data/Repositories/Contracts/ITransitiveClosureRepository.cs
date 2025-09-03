@@ -7,4 +7,6 @@ public interface ITransitiveClosureRepository
     Task AddAsync(TransitiveClosure transitiveClosure);
     Task<List<TransitiveClosure>> GetAncestorsAsync(int parentNodeId);
     Task<List<TransitiveClosure>> GetByTreeIdAsync(int treeId);
+    Task DeleteAsync(TransitiveClosure closure);
+    Task<List<TransitiveClosure>> GetAllByNodeIdAsync(int nodeId);
 }

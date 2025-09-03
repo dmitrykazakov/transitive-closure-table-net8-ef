@@ -57,14 +57,31 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
     public async Task<Node> DeleteAsync(int id)
     {
         using var unitOfWork = unitOfWorkFactory.Create();
+        await using var transaction = await unitOfWork.BeginTransactionAsync();
 
+        // Load the node
         var node = await unitOfWork.Nodes.GetByIdAsync(id);
 
-        //var ancestors = await unitOfWork.Nodes.GetAncestorsAsync(id);
-        //if (ancestors is { ancestors.Count: > 1 })
-        //    throw new SecureException("You have to delete all ancestors nodes first");
+        // Root check: cannot delete root node (no parent)
+        if (!await unitOfWork.Nodes.HasDirectAncestorAsync(id))
+            throw new SecureException("Cannot delete the Root node.");
 
-        await unitOfWork.Nodes.DeleteAsync(node ?? throw new SecureException($"Node with id '{id}' not found."));
+        // Leaf check: cannot delete if node has children
+        if (await unitOfWork.Nodes.HasDirectDescendantAsync(id))
+            throw new SecureException("You must delete all child nodes first.");
+
+        // Delete all closure rows referencing this node
+        var relatedClosures = await unitOfWork.TransitiveClosures.GetAllByNodeIdAsync(node.Id);
+        foreach (var tc in relatedClosures)
+        {
+            await unitOfWork.TransitiveClosures.DeleteAsync(tc);
+        }
+
+        // Delete the node itself
+        await unitOfWork.Nodes.DeleteAsync(node);
+
+        // Commit transaction
+        await transaction.CommitAsync();
 
         return node;
     }
