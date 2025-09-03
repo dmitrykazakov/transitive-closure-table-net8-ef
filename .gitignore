@@ -420,3 +420,4 @@ FodyWeavers.xsd
 /!CreateMigration.cmd
 /!UpdateDB.cmd
 /Task
+/Migrations
