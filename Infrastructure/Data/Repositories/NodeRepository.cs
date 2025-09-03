@@ -22,13 +22,10 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
         await appDbContext.SaveChangesAsync();
     }
 
-    // Get all direct children of a node
-    public async Task<List<Node>> GetChildrenAsync(int parentId)
+    public async Task<List<Node>> GetByTreeIdAsync(int treeId)
     {
-        // Assuming Nodes have a ParentId column, if not use closure table
         return await appDbContext.Nodes
-            .Where(n => appDbContext.TransitiveClosures
-                .Any(tc => tc.AncestorId == parentId && tc.DescendantId == n.Id && tc.Depth == 1))
+            .Where(n => n.TreeId == treeId)
             .ToListAsync();
     }
 }

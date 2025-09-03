@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TransitiveClosureTable.Domain.Entities;
 
@@ -14,8 +13,4 @@ public class Tree
     public ICollection<Node> Nodes { get; set; } = [];
 
     public ICollection<TransitiveClosure> TransitiveClosures { get; set; } = [];
-
-    // Not persisted — only used in memory
-    [NotMapped]
-    public List<Node> NestedNodes { get; set; } = [];
 }

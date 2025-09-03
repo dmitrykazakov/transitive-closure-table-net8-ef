@@ -7,5 +7,5 @@ public interface INodeRepository
     Task<Node> GetByIdAsync(int id);
     Task DeleteAsync(Node node);
     Task AddAsync(Node rootNode);
-    Task<List<Node>> GetChildrenAsync(int parentId);
+    Task<List<Node>> GetByTreeIdAsync(int treeId);
 }

@@ -34,8 +34,7 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
         // 2. Add ancestor entries if parentNodeId is specified
         if (parentNodeId.HasValue)
         {
-            var parentAncestors = await unitOfWork.TransitiveClosures
-                .GetAncestorsAsync(parentNodeId.Value);
+            var parentAncestors = await unitOfWork.TransitiveClosures.GetAncestorsAsync(parentNodeId.Value);
 
             foreach (var ancestor in parentAncestors)
             {
@@ -61,9 +60,9 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
 
         var node = await unitOfWork.Nodes.GetByIdAsync(id);
 
-        //var children = await unitOfWork.Nodes.GetChildrenAsync(id);
-        //if (children is { Children.Count: > 1 })
-        //    throw new SecureException("You have to delete all children nodes first");
+        //var ancestors = await unitOfWork.Nodes.GetAncestorsAsync(id);
+        //if (ancestors is { ancestors.Count: > 1 })
+        //    throw new SecureException("You have to delete all ancestors nodes first");
 
         await unitOfWork.Nodes.DeleteAsync(node ?? throw new SecureException($"Node with id '{id}' not found."));
 

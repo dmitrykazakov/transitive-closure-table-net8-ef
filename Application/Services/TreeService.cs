@@ -43,9 +43,23 @@ public class TreeService(IUnitOfWorkFactory unitOfWorkFactory) : ITreeService
             await unitOfWork.CommitAsync();
         }
 
+        // Load nodes + closures
+        var nodes = await unitOfWork.Nodes.GetByTreeIdAsync(tree.Id);
+        var closures = await unitOfWork.TransitiveClosures.GetByTreeIdAsync(tree.Id);
+
+        // Build hierarchy
+        var rootNodes = BuildNestedTree(nodes, closures);
+
         await transaction.CommitAsync();
 
-        return tree.ToDto();
+        // we assume only 1 root per tree
+        var root = rootNodes.Single();
+        return new TreeDto
+        {
+            Id = tree.Id,
+            Name = tree.Name,
+            Root = root.ToDto()
+        };
     }
 
     private static List<Node> BuildNestedTree(List<Node> nodes, List<TransitiveClosure> closures)
@@ -54,14 +68,14 @@ public class TreeService(IUnitOfWorkFactory unitOfWorkFactory) : ITreeService
 
         foreach (var node in nodes)
         {
-            node.Children.Clear();
+            node.Ancestors.Clear();
         }
 
         foreach (var closure in closures.Where(c => c.Depth == 1))
         {
             if (nodeDict.TryGetValue(closure.AncestorId, out var parent) && nodeDict.TryGetValue(closure.DescendantId, out var child))
             {
-                parent.Children.Add(child);
+                parent.Ancestors.Add(child);
             }
         }
 

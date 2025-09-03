@@ -13,5 +13,5 @@ public class Node
     public Tree? Tree { get; set; }
 
     // Not persisted — only used in memory
-    [NotMapped] public List<Node> Children { get; set; } = [];
+    [NotMapped] public List<Node> Ancestors { get; set; } = [];
 }

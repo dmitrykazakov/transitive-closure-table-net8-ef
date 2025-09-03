@@ -6,6 +6,7 @@ namespace TransitiveClosureTable.Infrastructure.Data.Repositories;
 
 public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiveClosureRepository
 {
+    // Get all ancestors of a node
     public async Task<List<TransitiveClosure>> GetAncestorsAsync(int descendantId)
     {
         return await appDbContext.TransitiveClosures
@@ -14,6 +15,15 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
             .ToListAsync();
     }
 
+    // Get all closures for a given tree
+    public async Task<List<TransitiveClosure>> GetByTreeIdAsync(int treeId)
+    {
+        return await appDbContext.TransitiveClosures
+            .Where(tc => tc.TreeId == treeId)
+            .ToListAsync();
+    }
+
+    // Add a closure row
     public async Task AddAsync(TransitiveClosure transitiveClosure)
     {
         await appDbContext.TransitiveClosures.AddAsync(transitiveClosure);
