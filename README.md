@@ -41,28 +41,7 @@ It demonstrates **Domain-Driven Design (DDD)**, robust error handling, cross-dat
 - **Application/** – Service layer with contracts and implementations.
 - **Infrastructure/** – EF Core context, repositories, factories, and Unit of Work.
 - **Middleware/** – Custom ASP.NET Core middleware for global exception handling.
-- **WebApi/** – Controllers and API entry point.
-- **Tests/** – Unit tests for domain and infrastructure logic.
-
----
-
-## 📦 Getting Started
-
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/yourusername/transitive-closure-table-net8-ef.git
-   ```
-2. Install dependencies:
-   ```bash
-   dotnet restore
-   ```
-3. Apply migrations:
-   ```bash
-   dotnet ef database update
-   ```
-4. Run the app:
-   ```bash
-   dotnet run --project WebApi
-   ```
+- **Presentation/** – Controllers and API entry point.
+- **TransitiveClosureTable.Tests/** – Unit tests for domain and infrastructure logic.
 
 ---
