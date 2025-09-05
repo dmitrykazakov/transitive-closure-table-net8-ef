@@ -42,7 +42,7 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
         if (transitiveClosures == null) return;
 
         // Convert to array once to avoid multiple enumeration
-        var closures = transitiveClosures as TransitiveClosure[] ?? transitiveClosures.ToArray();
+        var closures = transitiveClosures.ToArray();
 
         // Null out navigation properties
         foreach (var closure in closures)
@@ -111,32 +111,5 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     public async Task AddAsync(TransitiveClosure transitiveClosure)
     {
         await appDbContext.TransitiveClosures.AddAsync(transitiveClosure);
-    }
-
-    /// <summary>
-    ///     Gets all ancestor closures of a given node.
-    /// </summary>
-    /// <param name="nodeId">The node ID for which to find ancestors.</param>
-    /// <returns>List of TransitiveClosure entries representing ancestors.</returns>
-    public async Task<List<TransitiveClosure>> GetAncestorsAsync(int nodeId)
-    {
-        return await appDbContext.TransitiveClosures
-            .Where(tc => tc.DescendantId == nodeId)
-            .OrderBy(tc => tc.Depth) // optional: closest ancestor first
-            .ToListAsync();
-    }
-
-    /// <summary>
-    ///     Deletes a single transitive transitiveClosure row.
-    /// </summary>
-    /// <param name="transitiveClosure">The transitiveClosure row to delete. If null, nothing happens.</param>
-    public async Task DeleteAsync(TransitiveClosure? transitiveClosure)
-    {
-        if (transitiveClosure == null)
-            return;
-
-        appDbContext.TransitiveClosures.Remove(transitiveClosure);
-
-        await Task.CompletedTask;
     }
 }

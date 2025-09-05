@@ -74,8 +74,9 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
         return await appDbContext.TransitiveClosures
             .AnyAsync(tc => tc.DescendantId == nodeId && tc.Depth == 1);
     }
+
     /// <summary>
-    /// Renames the specified node entity in the database.
+    ///     Renames the specified node entity in the database.
     /// </summary>
     /// <param name="node">The node entity with updated name.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
@@ -84,10 +85,7 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
         ArgumentNullException.ThrowIfNull(node, nameof(node));
 
         // Attach the entity if it's not being tracked
-        if (appDbContext.Nodes.Local.All(n => n.Id != node.Id))
-        {
-            appDbContext.Nodes.Attach(node);
-        }
+        if (appDbContext.Nodes.Local.All(n => n.Id != node.Id)) appDbContext.Nodes.Attach(node);
 
         // Mark entity as modified
         appDbContext.Entry(node).State = EntityState.Modified;

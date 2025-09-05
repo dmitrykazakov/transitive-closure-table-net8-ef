@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using TransitiveClosureTable.Domain.Entities;
 using TransitiveClosureTable.Infrastructure.Data;
 using TransitiveClosureTable.Infrastructure.Data.Repositories;
+using TransitiveClosureTable.Infrastructure.Factories;
 
 namespace TransitiveClosureTable.Tests.InfrastructureTests;
 
 /// <summary>
-///     Contains unit tests for <see cref="TreeRepository" /> using an in-memory database.
+///     Contains unit tests for <see cref="TreeRepository" /> using an in-memory database and UnitOfWork.
 /// </summary>
 public class TreeRepositoryTests
 {
@@ -32,11 +33,11 @@ public class TreeRepositoryTests
     public async Task AddAsync_Should_Add_Tree()
     {
         var context = GetDbContext();
-        var repo = new TreeRepository(context);
+        await using var unitOfWork = new UnitOfWork(context);
 
         var tree = new Tree { Name = "Tree1" };
-        await repo.AddAsync(tree);
-        await context.SaveChangesAsync();
+        await unitOfWork.Trees.AddAsync(tree);
+        await unitOfWork.CommitAsync();
 
         (await context.Trees.CountAsync()).Should().Be(1);
         (await context.Trees.FirstAsync()).Name.Should().Be("Tree1");
@@ -51,17 +52,17 @@ public class TreeRepositoryTests
     public async Task GetByNameAsync_Should_Return_Tree_Or_Null()
     {
         var context = GetDbContext();
-        var repo = new TreeRepository(context);
+        await using var unitOfWork = new UnitOfWork(context);
 
         var tree = new Tree { Name = "Tree1" };
-        await repo.AddAsync(tree);
-        await context.SaveChangesAsync();
+        await unitOfWork.Trees.AddAsync(tree);
+        await unitOfWork.CommitAsync();
 
-        var fetched = await repo.GetByNameAsync("Tree1");
+        var fetched = await unitOfWork.Trees.GetByNameAsync("Tree1");
         fetched.Should().NotBeNull();
         fetched.Name.Should().Be("Tree1");
 
-        var notFound = await repo.GetByNameAsync("Unknown");
+        var notFound = await unitOfWork.Trees.GetByNameAsync("Unknown");
         notFound.Should().BeNull();
     }
 }

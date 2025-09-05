@@ -48,10 +48,10 @@ public interface INodeRepository
     Task<bool> HasDirectAncestorAsync(int id);
 
     /// <summary>
-    /// Updates the specified node in the database.
+    ///     Updates the specified node in the database.
     /// </summary>
     /// <param name="node">The node entity with updated values.</param>
-    /// <returns>A task representing the asynchronous operation.</returns> node);
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// node);
     Task RenameAsync(Node node);
-
 }

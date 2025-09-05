@@ -9,9 +9,10 @@ namespace TransitiveClosureTable.Infrastructure.Factories;
 /// <summary>
 ///     Implements the Unit of Work pattern for managing repositories and database transactions.
 /// </summary>
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork : IUnitOfWork, IAsyncDisposable
 {
     private readonly AppDbContext _appDbContext;
+    private bool _disposed;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="UnitOfWork" /> class.
@@ -25,6 +26,22 @@ public class UnitOfWork : IUnitOfWork
         Trees = new TreeRepository(_appDbContext);
         TransitiveClosures = new TransitiveClosureRepository(_appDbContext);
         ExceptionJournals = new ExceptionJournalRepository(_appDbContext);
+    }
+
+    /// <summary>
+    ///     Asynchronously disposes the UnitOfWork and underlying DbContext.
+    ///     Suppresses finalization to prevent derived classes from needing a finalizer.
+    /// </summary>
+    public async ValueTask DisposeAsync()
+    {
+        if (_disposed) return;
+
+        await _appDbContext.DisposeAsync();
+
+        _disposed = true;
+
+        // Prevent finalizer from running
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>

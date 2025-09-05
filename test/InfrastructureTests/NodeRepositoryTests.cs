@@ -4,11 +4,12 @@ using TransitiveClosureTable.Domain.Entities;
 using TransitiveClosureTable.Domain.Exceptions;
 using TransitiveClosureTable.Infrastructure.Data;
 using TransitiveClosureTable.Infrastructure.Data.Repositories;
+using TransitiveClosureTable.Infrastructure.Factories;
 
 namespace TransitiveClosureTable.Tests.InfrastructureTests;
 
 /// <summary>
-///     Contains unit tests for <see cref="NodeRepository" /> using an in-memory database.
+///     Contains unit tests for <see cref="NodeRepository" /> using an in-memory database and UnitOfWork.
 /// </summary>
 public class NodeRepositoryTests
 {
@@ -33,10 +34,11 @@ public class NodeRepositoryTests
     public async Task AddAsync_Should_Add_Node()
     {
         var context = GetDbContext();
-        var repo = new NodeRepository(context);
+        await using var unitOfWork = new UnitOfWork(context);
 
         var node = new Node { Name = "Node1", TreeId = 1 };
-        await repo.AddAsync(node);
+        await unitOfWork.Nodes.AddAsync(node);
+        await unitOfWork.CommitAsync();
 
         (await context.Nodes.CountAsync()).Should().Be(1);
         (await context.Nodes.FirstAsync()).Name.Should().Be("Node1");
@@ -51,15 +53,18 @@ public class NodeRepositoryTests
     public async Task GetByIdAsync_Should_Return_Node_Or_Throw()
     {
         var context = GetDbContext();
-        var repo = new NodeRepository(context);
-        var node = new Node { Name = "Node1", TreeId = 1 };
-        await repo.AddAsync(node);
+        await using var unitOfWork = new UnitOfWork(context);
 
-        var fetched = await repo.GetByIdAsync(node.Id);
+        var node = new Node { Name = "Node1", TreeId = 1 };
+        await unitOfWork.Nodes.AddAsync(node);
+        await unitOfWork.CommitAsync();
+
+        var fetched = await unitOfWork.Nodes.GetByIdAsync(node.Id);
         fetched.Should().NotBeNull();
         fetched.Name.Should().Be("Node1");
 
-        await repo.Invoking(r => r.GetByIdAsync(999))
+        await unitOfWork.Nodes
+            .Invoking(r => r.GetByIdAsync(999))
             .Should().ThrowAsync<SecureException>();
     }
 
@@ -71,11 +76,15 @@ public class NodeRepositoryTests
     public async Task DeleteAsync_Should_Remove_Node()
     {
         var context = GetDbContext();
-        var repo = new NodeRepository(context);
-        var node = new Node { Name = "Node1", TreeId = 1 };
-        await repo.AddAsync(node);
+        await using var unitOfWork = new UnitOfWork(context);
 
-        await repo.DeleteAsync(node);
+        var node = new Node { Name = "Node1", TreeId = 1 };
+        await unitOfWork.Nodes.AddAsync(node);
+        await unitOfWork.CommitAsync();
+
+        await unitOfWork.Nodes.DeleteAsync(node);
+        await unitOfWork.CommitAsync();
+
         (await context.Nodes.CountAsync()).Should().Be(0);
     }
 }

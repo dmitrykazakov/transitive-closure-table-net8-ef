@@ -88,7 +88,7 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
     }
 
     /// <summary>
-    /// Renames the specified node.
+    ///     Renames the specified node.
     /// </summary>
     /// <param name="id">The ID of the node to rename.</param>
     /// <param name="newName">The new name for the node.</param>
@@ -117,5 +117,4 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
 
         return node;
     }
-
 }
