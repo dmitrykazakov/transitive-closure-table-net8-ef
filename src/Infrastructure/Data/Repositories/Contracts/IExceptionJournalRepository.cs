@@ -19,18 +19,18 @@ public interface IExceptionJournalRepository
     ///     Retrieves a filtered and paginated list of exception journal entries.
     ///     All filtering, ordering, and pagination logic is implemented in the repository.
     /// </summary>
-    /// <param name="request">
-    ///     The request DTO containing optional filters:
-    ///     <see cref="ExceptionJournalRequestDto.Skip" />,
-    ///     <see cref="ExceptionJournalRequestDto.Take" />,
-    ///     <see cref="ExceptionJournalRequestDto.FromTimestamp" />,
-    ///     <see cref="ExceptionJournalRequestDto.ToTimestamp" />,
-    ///     <see cref="ExceptionJournalRequestDto.ExceptionType" />,
-    ///     <see cref="ExceptionJournalRequestDto.QueryContains" />,
-    ///     <see cref="ExceptionJournalRequestDto.BodyContains" />.
+    /// <param name="requestRange">
+    ///     The requestRange DTO containing optional filters:
+    ///     <see cref="GetExceptionJournalRequestRangeDto.Skip" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.Take" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.FromTimestamp" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.ToTimestamp" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.ExceptionType" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.QueryContains" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.BodyContains" />.
     /// </param>
     /// <returns>A list of <see cref="ExceptionJournal" /> entries matching the filters.</returns>
-    Task<List<ExceptionJournal>> GetRangeAsync(ExceptionJournalRequestDto request);
+    Task<List<ExceptionJournal>> GetRangeAsync(GetExceptionJournalRequestRangeDto requestRange);
 
     /// <summary>
     ///     Retrieves a single exception journal entry by its unique identifier.

@@ -5,7 +5,6 @@ using TransitiveClosureTable.Application.Services.Contracts;
 namespace TransitiveClosureTable.Presentation.Controllers;
 
 [ApiController]
-[Route("api.user.tree")] // base route for tree-related endpoints
 [SwaggerTag("Represents entire tree API")]
 public class TreeController(ITreeService treeService) : ControllerBase
 {
@@ -13,7 +12,7 @@ public class TreeController(ITreeService treeService) : ControllerBase
     ///     Returns the entire tree by name.
     ///     If the tree doesn't exist, it will be created automatically.
     /// </summary>
-    [HttpPost("get")]
+    [HttpPost("api.user.tree.get")]
     [SwaggerOperation(Description =
         "Returns your entire tree. If your tree doesn't exist it will be created automatically.")]
     public async Task<IActionResult> GetOrCreateTreeAsync([FromQuery] string name)

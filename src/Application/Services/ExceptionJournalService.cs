@@ -6,7 +6,7 @@ using TransitiveClosureTable.Infrastructure.Factories.Contracts;
 namespace TransitiveClosureTable.Application.Services;
 
 /// <summary>
-///     Service responsible for managing exception logs in the <see cref="ExceptionJournal" /> table.
+///     Service responsible for managing exception logs in the <see cref="ExceptionJournal"/> table.
 ///     Provides methods for logging exceptions, retrieving single entries, and retrieving paginated/filterable lists.
 /// </summary>
 public class ExceptionJournalService(IUnitOfWorkFactory unitOfWorkFactory) : IExceptionJournalService
@@ -16,7 +16,9 @@ public class ExceptionJournalService(IUnitOfWorkFactory unitOfWorkFactory) : IEx
     /// </summary>
     /// <param name="exception">The exception object to log.</param>
     /// <param name="httpContext">The current HTTP context containing request data.</param>
-    /// <returns>The created <see cref="ExceptionJournal" /> entity representing the logged exception.</returns>
+    /// <returns>
+    ///     The created <see cref="ExceptionJournal"/> entity representing the logged exception.
+    /// </returns>
     public async Task<ExceptionJournal> LogExceptionAsync(Exception exception, HttpContext httpContext)
     {
         using var unitOfWork = unitOfWorkFactory.Create();
@@ -44,27 +46,31 @@ public class ExceptionJournalService(IUnitOfWorkFactory unitOfWorkFactory) : IEx
     /// <summary>
     ///     Retrieves a list of exception journal entries with optional filtering and pagination.
     /// </summary>
-    /// <param name="request">
-    ///     The request DTO containing pagination parameters (Skip, Take)
-    ///     and optional filters (FromTimestamp, ToTimestamp, ExceptionType, QueryContains, BodyContains).
+    /// <param name="getExceptionJournalRequestRangeDto">
+    ///     DTO containing pagination parameters (Skip, Take) and optional filters
+    ///     (FromTimestamp, ToTimestamp, ExceptionType, QueryContains, BodyContains).
     /// </param>
-    /// <returns>A list of <see cref="ExceptionJournal" /> entries matching the filters.</returns>
-    public async Task<List<ExceptionJournal>> GetRangeAsync(ExceptionJournalRequestDto request)
+    /// <returns>
+    ///     A list of <see cref="ExceptionJournal"/> entries matching the filters.
+    /// </returns>
+    public async Task<List<ExceptionJournal>> GetRangeAsync(GetExceptionJournalRequestRangeDto getExceptionJournalRequestRangeDto)
     {
         using var unitOfWork = unitOfWorkFactory.Create();
-        return await unitOfWork.ExceptionJournals.GetRangeAsync(request);
+        return await unitOfWork.ExceptionJournals.GetRangeAsync(getExceptionJournalRequestRangeDto);
     }
 
     /// <summary>
     ///     Retrieves a single exception journal entry by its unique identifier.
     /// </summary>
-    /// <param name="eventId">The unique ID of the exception event.</param>
+    /// <param name="getSingleExceptionJournalRequestDto">
+    ///     DTO containing the unique ID of the exception journal entry to retrieve.
+    /// </param>
     /// <returns>
-    ///     The <see cref="ExceptionJournal" /> entry if found; otherwise, <c>null</c>.
+    ///     The <see cref="ExceptionJournal"/> entry if found; otherwise, <c>null</c>.
     /// </returns>
-    public async Task<ExceptionJournal?> GetSingleAsync(long eventId)
+    public async Task<ExceptionJournal?> GetSingleAsync(GetSingleExceptionJournalRequestDto getSingleExceptionJournalRequestDto)
     {
         using var unitOfWork = unitOfWorkFactory.Create();
-        return await unitOfWork.ExceptionJournals.GetByIdAsync(eventId);
+        return await unitOfWork.ExceptionJournals.GetByIdAsync(getSingleExceptionJournalRequestDto.EventId);
     }
 }

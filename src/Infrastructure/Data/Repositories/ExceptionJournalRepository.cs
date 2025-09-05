@@ -25,40 +25,40 @@ public class ExceptionJournalRepository(AppDbContext appDbContext) : IExceptionJ
     ///     Retrieves a filtered and paginated list of exception journal entries.
     ///     All filtering and pagination is applied in the repository.
     /// </summary>
-    /// <param name="request">
-    ///     The request DTO containing optional filters and pagination parameters:
-    ///     <see cref="ExceptionJournalRequestDto.Skip" />,
-    ///     <see cref="ExceptionJournalRequestDto.Take" />,
-    ///     <see cref="ExceptionJournalRequestDto.FromTimestamp" />,
-    ///     <see cref="ExceptionJournalRequestDto.ToTimestamp" />,
-    ///     <see cref="ExceptionJournalRequestDto.ExceptionType" />,
-    ///     <see cref="ExceptionJournalRequestDto.QueryContains" />,
-    ///     <see cref="ExceptionJournalRequestDto.BodyContains" />.
+    /// <param name="requestRange">
+    ///     The requestRange DTO containing optional filters and pagination parameters:
+    ///     <see cref="GetExceptionJournalRequestRangeDto.Skip" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.Take" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.FromTimestamp" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.ToTimestamp" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.ExceptionType" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.QueryContains" />,
+    ///     <see cref="GetExceptionJournalRequestRangeDto.BodyContains" />.
     /// </param>
     /// <returns>A list of <see cref="ExceptionJournal" /> entries matching the filters.</returns>
-    public async Task<List<ExceptionJournal>> GetRangeAsync(ExceptionJournalRequestDto request)
+    public async Task<List<ExceptionJournal>> GetRangeAsync(GetExceptionJournalRequestRangeDto requestRange)
     {
         var query = appDbContext.ExceptionJournals.AsQueryable();
 
-        if (request.FromTimestamp.HasValue)
-            query = query.Where(j => j.Timestamp >= request.FromTimestamp.Value);
+        if (requestRange.FromTimestamp.HasValue)
+            query = query.Where(j => j.Timestamp >= requestRange.FromTimestamp.Value);
 
-        if (request.ToTimestamp.HasValue)
-            query = query.Where(j => j.Timestamp <= request.ToTimestamp.Value);
+        if (requestRange.ToTimestamp.HasValue)
+            query = query.Where(j => j.Timestamp <= requestRange.ToTimestamp.Value);
 
-        if (!string.IsNullOrWhiteSpace(request.ExceptionType))
-            query = query.Where(j => j.ExceptionType == request.ExceptionType);
+        if (!string.IsNullOrWhiteSpace(requestRange.ExceptionType))
+            query = query.Where(j => j.ExceptionType == requestRange.ExceptionType);
 
-        if (!string.IsNullOrWhiteSpace(request.QueryContains))
-            query = query.Where(j => j.QueryParams.Contains(request.QueryContains));
+        if (!string.IsNullOrWhiteSpace(requestRange.QueryContains))
+            query = query.Where(j => j.QueryParams.Contains(requestRange.QueryContains));
 
-        if (!string.IsNullOrWhiteSpace(request.BodyContains))
-            query = query.Where(j => j.BodyParams.Contains(request.BodyContains));
+        if (!string.IsNullOrWhiteSpace(requestRange.BodyContains))
+            query = query.Where(j => j.BodyParams.Contains(requestRange.BodyContains));
 
         return await query
             .OrderByDescending(j => j.Timestamp)
-            .Skip(request.Skip)
-            .Take(request.Take)
+            .Skip(requestRange.Skip)
+            .Take(requestRange.Take)
             .ToListAsync();
     }
 

@@ -39,7 +39,7 @@ public static class TreeMappingExtensions
         {
             Id = node.Id,
             Name = node.Name,
-            Descendants = node.Descendants.Select(c => c.ToDto()).ToList()
+            Descendants = [.. node.Descendants.Select(c => c.ToDto())]
         };
     }
 }
