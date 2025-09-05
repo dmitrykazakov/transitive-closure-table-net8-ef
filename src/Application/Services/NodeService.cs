@@ -2,6 +2,7 @@
 using TransitiveClosureTable.Domain.Entities;
 using TransitiveClosureTable.Domain.Exceptions;
 using TransitiveClosureTable.Infrastructure.Factories.Contracts;
+using static NpgsqlTypes.NpgsqlTsQuery;
 
 namespace TransitiveClosureTable.Application.Services;
 
@@ -59,25 +60,29 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
         using var unitOfWork = unitOfWorkFactory.Create();
         await using var transaction = await unitOfWork.BeginTransactionAsync();
 
-        // Load the node (throws SecureException if not found)
         var node = await unitOfWork.Nodes.GetByIdAsync(id);
 
-        // Root check: cannot delete root node (no parent)
         if (!await unitOfWork.Nodes.HasDirectAncestorAsync(id))
             throw new SecureException("Cannot delete the Root node.");
 
-        // Leaf check: cannot delete if node has children
         if (await unitOfWork.Nodes.HasDirectDescendantAsync(id))
             throw new SecureException("You must delete all child nodes first.");
 
-        // Delete all closure rows referencing this node in one call
-        var relatedClosures = await unitOfWork.TransitiveClosures.GetAllByNodeIdAsync(node.Id);
+        // 1. Delete closure rows
+        var relatedClosures = await unitOfWork.TransitiveClosures.GetAllByNodeIdAsync(id);
+
         await unitOfWork.TransitiveClosures.RemoveRangeAsync(relatedClosures);
 
-        // Delete the node itself
+        // Save closures FIRST so they are gone from the change tracker
+        await unitOfWork.CommitAsync();
+
+        // 2. Delete node itself
         await unitOfWork.Nodes.DeleteAsync(node);
 
-        // Commit transaction
+        // Save node
+        await unitOfWork.CommitAsync();
+
+        // 3. Commit transaction
         await transaction.CommitAsync();
 
         return node;

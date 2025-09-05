@@ -37,11 +37,27 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     ///     Deletes multiple transitive closure rows at once.
     /// </summary>
     /// <param name="transitiveClosures">Collection of closures to delete.</param>
-    public async Task RemoveRangeAsync(IEnumerable<TransitiveClosure> transitiveClosures)
+    public async Task RemoveRangeAsync(IEnumerable<TransitiveClosure>? transitiveClosures)
     {
-        appDbContext.TransitiveClosures.RemoveRange(transitiveClosures);
+        if (transitiveClosures == null) return;
+
+        // Convert to array once to avoid multiple enumeration
+        var closures = transitiveClosures as TransitiveClosure[] ?? transitiveClosures.ToArray();
+
+        // Null out navigation properties
+        foreach (var closure in closures)
+        {
+            closure.Ancestor = null;
+            closure.Descendant = null;
+        }
+
+        // Remove from DbContext
+        appDbContext.TransitiveClosures.RemoveRange(closures);
+
+        // Persist changes
         await appDbContext.SaveChangesAsync();
     }
+
 
     /// <summary>
     ///     Adds transitive closure records for a new node.
@@ -86,8 +102,6 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
         };
 
         await appDbContext.TransitiveClosures.AddAsync(selfClosure);
-
-        await appDbContext.SaveChangesAsync();
     }
 
     /// <summary>
@@ -97,7 +111,6 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     public async Task AddAsync(TransitiveClosure transitiveClosure)
     {
         await appDbContext.TransitiveClosures.AddAsync(transitiveClosure);
-        await appDbContext.SaveChangesAsync();
     }
 
     /// <summary>
@@ -114,15 +127,16 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     }
 
     /// <summary>
-    ///     Deletes a single transitive closure row.
+    ///     Deletes a single transitive transitiveClosure row.
     /// </summary>
-    /// <param name="closure">The closure row to delete. If null, nothing happens.</param>
-    public async Task DeleteAsync(TransitiveClosure? closure)
+    /// <param name="transitiveClosure">The transitiveClosure row to delete. If null, nothing happens.</param>
+    public async Task DeleteAsync(TransitiveClosure? transitiveClosure)
     {
-        if (closure == null)
+        if (transitiveClosure == null)
             return;
 
-        appDbContext.TransitiveClosures.Remove(closure);
-        await appDbContext.SaveChangesAsync();
+        appDbContext.TransitiveClosures.Remove(transitiveClosure);
+
+        await Task.CompletedTask;
     }
 }

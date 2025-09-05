@@ -41,7 +41,7 @@ public class NodeController(INodeService nodeService) : ControllerBase
     /// <summary>
     ///     Delete an existing node in the tree.
     /// </summary>
-    [HttpDelete("delete")]
+    [HttpDelete("delete/{id}")]
     [SwaggerOperation(Description = "Delete an existing node in your tree. " +
                                     "You must specify a node ID that belongs to your tree.")]
     public async Task<IActionResult> DeleteNode([FromRoute] int id)
