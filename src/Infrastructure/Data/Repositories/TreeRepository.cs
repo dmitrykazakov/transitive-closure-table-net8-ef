@@ -16,7 +16,9 @@ public class TreeRepository(AppDbContext appDbContext) : ITreeRepository
     /// <returns>The <see cref="Tree" /> with the specified name, or null if not found.</returns>
     public async Task<Tree?> GetByNameAsync(string name)
     {
-        return await appDbContext.Trees.SingleOrDefaultAsync(t => t.Name == name);
+        return await appDbContext.Trees
+            .AsNoTracking()
+            .SingleOrDefaultAsync(t => t.Name == name);
     }
 
     /// <summary>

@@ -17,6 +17,7 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     public async Task<List<TransitiveClosure>> GetByTreeIdAsync(int treeId)
     {
         return await appDbContext.TransitiveClosures
+            .AsNoTracking()
             .Where(tc => tc.TreeId == treeId)
             .ToListAsync();
     }
@@ -29,6 +30,7 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     public async Task<List<TransitiveClosure>> GetAllByNodeIdAsync(int nodeId)
     {
         return await appDbContext.TransitiveClosures
+            .AsNoTracking()
             .Where(tc => tc.DescendantId == nodeId || tc.AncestorId == nodeId)
             .ToListAsync();
     }
@@ -53,6 +55,7 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
 
         // Remove from DbContext
         appDbContext.TransitiveClosures.RemoveRange(closures);
+        await Task.CompletedTask;
     }
 
 
@@ -68,12 +71,14 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     {
         // Get parent's self-reference to extract TreeId
         var parentClosure = await appDbContext.TransitiveClosures
+            .AsNoTracking()
             .SingleAsync(tc => tc.AncestorId == parentNodeId && tc.DescendantId == parentNodeId);
 
         var treeId = parentClosure.TreeId;
 
         // Get all ancestors of parent
         var parentAncestors = await appDbContext.TransitiveClosures
+            .AsNoTracking()
             .Where(tc => tc.DescendantId == parentNodeId)
             .ToListAsync();
 

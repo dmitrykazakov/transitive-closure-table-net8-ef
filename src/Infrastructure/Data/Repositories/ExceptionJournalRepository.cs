@@ -56,6 +56,7 @@ public class ExceptionJournalRepository(AppDbContext appDbContext) : IExceptionJ
             query = query.Where(j => j.BodyParams.Contains(requestRange.BodyContains));
 
         return await query
+            .AsNoTracking()
             .OrderByDescending(j => j.Timestamp)
             .Skip(requestRange.Skip)
             .Take(requestRange.Take)
@@ -70,6 +71,7 @@ public class ExceptionJournalRepository(AppDbContext appDbContext) : IExceptionJ
     public async Task<ExceptionJournal?> GetByIdAsync(long eventId)
     {
         return await appDbContext.ExceptionJournals
+            .AsNoTracking()
             .FirstOrDefaultAsync(j => j.EventId == eventId);
     }
 }

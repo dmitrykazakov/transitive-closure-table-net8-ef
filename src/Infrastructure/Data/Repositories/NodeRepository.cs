@@ -19,6 +19,7 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     public async Task<Node> GetByIdAsync(int id)
     {
         var node = await appDbContext.Nodes
+                       .AsNoTracking()
                        .SingleOrDefaultAsync(n => n.Id == id) ??
                    throw new SecureException($"Node with ID = {id} not found.");
         return node;
@@ -50,7 +51,10 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     /// <returns>List of nodes in the tree.</returns>
     public async Task<List<Node>> GetByTreeIdAsync(int treeId)
     {
-        return await appDbContext.Nodes.Where(n => n.TreeId == treeId).ToListAsync();
+        return await appDbContext.Nodes
+            .AsNoTracking()
+            .Where(n => n.TreeId == treeId)
+            .ToListAsync();
     }
 
     /// <summary>
@@ -60,7 +64,9 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     /// <returns>True if the node has at least one direct child; otherwise, false.</returns>
     public async Task<bool> HasDirectDescendantAsync(int nodeId)
     {
-        return await appDbContext.TransitiveClosures.AnyAsync(tc => tc.AncestorId == nodeId && tc.Depth == 1);
+        return await appDbContext.TransitiveClosures
+            .AsNoTracking()
+            .AnyAsync(tc => tc.AncestorId == nodeId && tc.Depth == 1);
     }
 
     /// <summary>
@@ -71,6 +77,7 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     public async Task<bool> HasDirectAncestorAsync(int nodeId)
     {
         return await appDbContext.TransitiveClosures
+            .AsNoTracking()
             .AnyAsync(tc => tc.DescendantId == nodeId && tc.Depth == 1);
     }
 
