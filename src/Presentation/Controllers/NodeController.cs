@@ -42,7 +42,7 @@ public class NodeController(INodeService nodeService) : ControllerBase
     /// <returns>
     /// Returns <see cref="OkObjectResult"/> with the renamed node.
     /// </returns>
-    [HttpPut("api.user.tree.node.rename")]
+    [HttpPost("api.user.tree.node.rename")]
     [SwaggerOperation(Description = "Rename an existing node in your tree. " +
                                     "You must specify a node ID that belongs to your tree. " +
                                     "A new name of the node must be unique across all siblings.")]
@@ -62,7 +62,7 @@ public class NodeController(INodeService nodeService) : ControllerBase
     /// <returns>
     /// Returns <see cref="OkObjectResult"/> with the deleted node.
     /// </returns>
-    [HttpDelete("api.user.tree.node.delete")]
+    [HttpPost("api.user.tree.node.delete")]
     [SwaggerOperation(Description = "Delete an existing node in your tree. " +
                                     "You must specify a node ID that belongs to your tree.")]
     public async Task<IActionResult> DeleteNode([FromBody] DeleteNodeRequestDto deleteNodeRequestDto)
