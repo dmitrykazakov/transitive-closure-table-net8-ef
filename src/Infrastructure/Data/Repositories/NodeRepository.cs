@@ -51,9 +51,7 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     /// <returns>List of nodes in the tree.</returns>
     public async Task<List<Node>> GetByTreeIdAsync(int treeId)
     {
-        return await appDbContext.Nodes
-            .Where(n => n.TreeId == treeId)
-            .ToListAsync();
+        return await appDbContext.Nodes.Where(n => n.TreeId == treeId).ToListAsync();
     }
 
     /// <summary>
@@ -63,8 +61,7 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     /// <returns>True if the node has at least one direct child; otherwise, false.</returns>
     public async Task<bool> HasDirectDescendantAsync(int nodeId)
     {
-        return await appDbContext.TransitiveClosures
-            .AnyAsync(tc => tc.AncestorId == nodeId && tc.Depth == 1);
+        return await appDbContext.TransitiveClosures.AnyAsync(tc => tc.AncestorId == nodeId && tc.Depth == 1);
     }
 
     /// <summary>
@@ -76,5 +73,26 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     {
         return await appDbContext.TransitiveClosures
             .AnyAsync(tc => tc.DescendantId == nodeId && tc.Depth == 1);
+    }
+    /// <summary>
+    /// Renames the specified node entity in the database.
+    /// </summary>
+    /// <param name="node">The node entity with updated name.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public Task RenameAsync(Node node)
+    {
+        ArgumentNullException.ThrowIfNull(node, nameof(node));
+
+        // Attach the entity if it's not being tracked
+        if (appDbContext.Nodes.Local.All(n => n.Id != node.Id))
+        {
+            appDbContext.Nodes.Attach(node);
+        }
+
+        // Mark entity as modified
+        appDbContext.Entry(node).State = EntityState.Modified;
+
+        // Do not call SaveChangesAsync() here if the UnitOfWork handles commits
+        return Task.CompletedTask;
     }
 }

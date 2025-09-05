@@ -2,7 +2,6 @@
 using Swashbuckle.AspNetCore.Annotations;
 using TransitiveClosureTable.Application.Dto;
 using TransitiveClosureTable.Application.Services.Contracts;
-using TransitiveClosureTable.Domain.Entities;
 
 namespace TransitiveClosureTable.Presentation.Controllers;
 
@@ -32,9 +31,9 @@ public class NodeController(INodeService nodeService) : ControllerBase
     [SwaggerOperation(Description = "Rename an existing node in your tree. " +
                                     "You must specify a node ID that belongs to your tree. " +
                                     "A new name of the node must be unique across all siblings.")]
-    public async Task<IActionResult> RenameNode([FromBody] Node node)
+    public async Task<IActionResult> RenameNode([FromBody] RenameNodeRequestDto request)
     {
-        var renamed = await nodeService.RenameAsync(node);
+        var renamed = await nodeService.RenameAsync(request.Id, request.Name);
         return Ok(renamed); // Changed to Ok because renaming is an update, not create
     }
 

@@ -41,7 +41,7 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 app.UseMiddleware<RequestBufferingMiddleware>();
-//app.UseErrorHandlingMiddleware();
+app.UseErrorHandlingMiddleware();
 
 
 if (app.Environment.IsDevelopment())

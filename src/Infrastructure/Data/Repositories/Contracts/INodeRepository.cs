@@ -46,4 +46,12 @@ public interface INodeRepository
     /// <param name="id">The node ID to check.</param>
     /// <returns>True if the node has a direct ancestor; otherwise, false.</returns>
     Task<bool> HasDirectAncestorAsync(int id);
+
+    /// <summary>
+    /// Updates the specified node in the database.
+    /// </summary>
+    /// <param name="node">The node entity with updated values.</param>
+    /// <returns>A task representing the asynchronous operation.</returns> node);
+    Task RenameAsync(Node node);
+
 }

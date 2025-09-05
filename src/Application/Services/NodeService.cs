@@ -2,7 +2,6 @@
 using TransitiveClosureTable.Domain.Entities;
 using TransitiveClosureTable.Domain.Exceptions;
 using TransitiveClosureTable.Infrastructure.Factories.Contracts;
-using static NpgsqlTypes.NpgsqlTsQuery;
 
 namespace TransitiveClosureTable.Application.Services;
 
@@ -68,33 +67,55 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
         if (await unitOfWork.Nodes.HasDirectDescendantAsync(id))
             throw new SecureException("You must delete all child nodes first.");
 
-        // 1. Delete closure rows
+        // Delete closure rows
         var relatedClosures = await unitOfWork.TransitiveClosures.GetAllByNodeIdAsync(id);
 
         await unitOfWork.TransitiveClosures.RemoveRangeAsync(relatedClosures);
 
-        // Save closures FIRST so they are gone from the change tracker
+        // Save closures so they are gone from the change tracker
         await unitOfWork.CommitAsync();
 
-        // 2. Delete node itself
+        // Delete node itself
         await unitOfWork.Nodes.DeleteAsync(node);
 
         // Save node
         await unitOfWork.CommitAsync();
 
-        // 3. Commit transaction
+        // Commit transaction
         await transaction.CommitAsync();
 
         return node;
     }
 
     /// <summary>
-    ///     Renames an existing node.
+    /// Renames the specified node.
     /// </summary>
-    /// <param name="node">The node entity to rename.</param>
+    /// <param name="id">The ID of the node to rename.</param>
+    /// <param name="newName">The new name for the node.</param>
     /// <returns>The renamed Node entity.</returns>
-    public Task<Node> RenameAsync(Node node)
+    public async Task<Node> RenameAsync(int id, string newName)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(newName))
+            throw new ArgumentException("New name must not be empty", nameof(newName));
+
+        using var unitOfWork = unitOfWorkFactory.Create();
+        await using var transaction = await unitOfWork.BeginTransactionAsync();
+
+        // Load the node
+        var node = await unitOfWork.Nodes.GetByIdAsync(id)
+                   ?? throw new SecureException($"Node with id {id} not found");
+
+        // Update the name
+        node.Name = newName;
+
+        // Use your RenameAsync method in the repository/unitOfWork
+        await unitOfWork.Nodes.RenameAsync(node);
+
+        // Commit the changes
+        await unitOfWork.CommitAsync();
+        await transaction.CommitAsync();
+
+        return node;
     }
+
 }
