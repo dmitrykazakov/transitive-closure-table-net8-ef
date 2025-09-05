@@ -12,7 +12,7 @@ using TransitiveClosureTable.Infrastructure.Data;
 namespace TransitiveClosureTable.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250905090940_InitialCreate")]
+    [Migration("20250905131717_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

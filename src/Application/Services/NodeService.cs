@@ -38,7 +38,6 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
         await unitOfWork.CommitAsync(); // ensure node.Id is generated
 
         // Add ancestors and descendants entries
-
         await unitOfWork.TransitiveClosures.AddAsync(node.Id, parentNodeId);
         await unitOfWork.CommitAsync();
 

@@ -30,8 +30,8 @@ public class Node
     public Tree? Tree { get; set; }
 
     /// <summary>
-    ///     List of child nodes in memory; not persisted in the database.
+    ///     List of descendant nodes in memory; not persisted in the database.
     /// </summary>
     [NotMapped]
-    public List<Node> Ancestors { get; set; } = [];
+    public List<Node> Descendants { get; set; } = [];
 }

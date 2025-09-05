@@ -103,12 +103,12 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     /// <summary>
     ///     Gets all ancestor closures of a given node.
     /// </summary>
-    /// <param name="descendantId">The node ID for which to find ancestors.</param>
+    /// <param name="nodeId">The node ID for which to find ancestors.</param>
     /// <returns>List of TransitiveClosure entries representing ancestors.</returns>
-    public async Task<List<TransitiveClosure>> GetAncestorsAsync(int descendantId)
+    public async Task<List<TransitiveClosure>> GetAncestorsAsync(int nodeId)
     {
         return await appDbContext.TransitiveClosures
-            .Where(tc => tc.DescendantId == descendantId)
+            .Where(tc => tc.DescendantId == nodeId)
             .OrderBy(tc => tc.Depth) // optional: closest ancestor first
             .ToListAsync();
     }

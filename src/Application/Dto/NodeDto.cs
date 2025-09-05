@@ -18,5 +18,5 @@ public class NodeDto
     /// <summary>
     ///     List of child nodes (direct descendants) in a nested structure.
     /// </summary>
-    public List<NodeDto> Ancestors { get; set; } = [];
+    public List<NodeDto> Descendants { get; set; } = [];
 }

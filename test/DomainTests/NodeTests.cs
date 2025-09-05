@@ -9,7 +9,7 @@ namespace TransitiveClosureTable.Tests.DomainTests;
 public class NodeTests
 {
     /// <summary>
-    ///     Verifies that a newly created <see cref="Node" /> initializes the <see cref="Node.Ancestors" /> collection
+    ///     Verifies that a newly created <see cref="Node" /> initializes the <see cref="Node.Descendants" /> collection
     ///     correctly.
     /// </summary>
     [Fact]
@@ -19,8 +19,8 @@ public class NodeTests
         var node = new Node { Name = "Node1", TreeId = 1 };
 
         // Assert
-        node.Ancestors.Should().NotBeNull();
-        node.Ancestors.Should().BeEmpty();
+        node.Descendants.Should().NotBeNull();
+        node.Descendants.Should().BeEmpty();
     }
 
     /// <summary>
