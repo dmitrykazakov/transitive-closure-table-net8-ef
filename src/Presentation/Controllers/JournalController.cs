@@ -11,7 +11,7 @@ namespace TransitiveClosureTable.Presentation.Controllers;
 public class JournalController(IExceptionJournalService exceptionJournalService) : ControllerBase
 {
     /// <summary>
-    /// Retrieves a paginated and optionally filtered list of exception journal entries.
+    ///     Retrieves a paginated and optionally filtered list of exception journal entries.
     /// </summary>
     [HttpPost("getRange")]
     [SwaggerOperation(Description =
@@ -34,7 +34,7 @@ public class JournalController(IExceptionJournalService exceptionJournalService)
     }
 
     /// <summary>
-    /// Retrieves a single exception journal entry by its identifier.
+    ///     Retrieves a single exception journal entry by its identifier.
     /// </summary>
     [HttpPost("getSingle")]
     [SwaggerOperation(Description = "Returns the information about a particular event by ID.")]

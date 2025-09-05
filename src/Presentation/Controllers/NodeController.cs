@@ -12,8 +12,8 @@ namespace TransitiveClosureTable.Presentation.Controllers;
 public class NodeController(INodeService nodeService) : ControllerBase
 {
     /// <summary>
-    /// Create a new node under a specified parent node.
-    /// If parentNodeId is null, the node will be created as a root.
+    ///     Create a new node under a specified parent node.
+    ///     If parentNodeId is null, the node will be created as a root.
     /// </summary>
     [HttpPost("create")]
     [SwaggerOperation(Description = "Create a new node under a specified parent node. " +
@@ -25,8 +25,8 @@ public class NodeController(INodeService nodeService) : ControllerBase
     }
 
     /// <summary>
-    /// Rename an existing node in the tree.
-    /// The new name must be unique across all siblings.
+    ///     Rename an existing node in the tree.
+    ///     The new name must be unique across all siblings.
     /// </summary>
     [HttpPut("rename")]
     [SwaggerOperation(Description = "Rename an existing node in your tree. " +
@@ -39,7 +39,7 @@ public class NodeController(INodeService nodeService) : ControllerBase
     }
 
     /// <summary>
-    /// Delete an existing node in the tree.
+    ///     Delete an existing node in the tree.
     /// </summary>
     [HttpDelete("delete")]
     [SwaggerOperation(Description = "Delete an existing node in your tree. " +

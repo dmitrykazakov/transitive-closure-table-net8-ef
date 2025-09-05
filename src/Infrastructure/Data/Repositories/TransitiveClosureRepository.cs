@@ -5,25 +5,12 @@ using TransitiveClosureTable.Infrastructure.Data.Repositories.Contracts;
 namespace TransitiveClosureTable.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Repository for managing TransitiveClosure entities.
+///     Repository for managing TransitiveClosure entities.
 /// </summary>
 public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiveClosureRepository
 {
     /// <summary>
-    /// Gets all ancestor closures of a given node.
-    /// </summary>
-    /// <param name="descendantId">The node ID for which to find ancestors.</param>
-    /// <returns>List of TransitiveClosure entries representing ancestors.</returns>
-    public async Task<List<TransitiveClosure>> GetAncestorsAsync(int descendantId)
-    {
-        return await appDbContext.TransitiveClosures
-            .Where(tc => tc.DescendantId == descendantId)
-            .OrderBy(tc => tc.Depth) // optional: closest ancestor first
-            .ToListAsync();
-    }
-
-    /// <summary>
-    /// Gets all transitive closure rows for a specific tree.
+    ///     Gets all transitive closure rows for a specific tree.
     /// </summary>
     /// <param name="treeId">The tree ID.</param>
     /// <returns>List of TransitiveClosure entries belonging to the tree.</returns>
@@ -35,20 +22,7 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     }
 
     /// <summary>
-    /// Deletes a single transitive closure row.
-    /// </summary>
-    /// <param name="closure">The closure row to delete. If null, nothing happens.</param>
-    public async Task DeleteAsync(TransitiveClosure? closure)
-    {
-        if (closure == null)
-            return;
-
-        appDbContext.TransitiveClosures.Remove(closure);
-        await appDbContext.SaveChangesAsync();
-    }
-
-    /// <summary>
-    /// Gets all closure rows that reference a specific node, either as ancestor or descendant.
+    ///     Gets all closure rows that reference a specific node, either as ancestor or descendant.
     /// </summary>
     /// <param name="nodeId">The node ID.</param>
     /// <returns>List of related TransitiveClosure entries.</returns>
@@ -60,7 +34,7 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     }
 
     /// <summary>
-    /// Deletes multiple transitive closure rows at once.
+    ///     Deletes multiple transitive closure rows at once.
     /// </summary>
     /// <param name="transitiveClosures">Collection of closures to delete.</param>
     public async Task RemoveRangeAsync(IEnumerable<TransitiveClosure> transitiveClosures)
@@ -68,18 +42,17 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
         appDbContext.TransitiveClosures.RemoveRange(transitiveClosures);
         await appDbContext.SaveChangesAsync();
     }
-    
+
     /// <summary>
-    /// Adds transitive closure records for a new node.
-    /// Inserts:
-    /// 1) Self-reference (Depth = 0).
-    /// 2) All ancestors of parent + new descendant with Depth + 1.
+    ///     Adds transitive closure records for a new node.
+    ///     Inserts:
+    ///     1) Self-reference (Depth = 0).
+    ///     2) All ancestors of parent + new descendant with Depth + 1.
     /// </summary>
     /// <param name="nodeId">The new node's ID (descendant).</param>
     /// <param name="parentNodeId">The parent node's ID. If null, node is root.</param>
     public async Task AddAsync(int nodeId, int parentNodeId)
     {
-        
         // Get parent's self-reference to extract TreeId
         var parentClosure = await appDbContext.TransitiveClosures
             .SingleAsync(tc => tc.AncestorId == parentNodeId && tc.DescendantId == parentNodeId);
@@ -118,12 +91,38 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
     }
 
     /// <summary>
-    /// Adds a new transitive closure row.
+    ///     Adds a new transitive closure row.
     /// </summary>
     /// <param name="transitiveClosure">The closure row to add.</param>
     public async Task AddAsync(TransitiveClosure transitiveClosure)
     {
         await appDbContext.TransitiveClosures.AddAsync(transitiveClosure);
+        await appDbContext.SaveChangesAsync();
+    }
+
+    /// <summary>
+    ///     Gets all ancestor closures of a given node.
+    /// </summary>
+    /// <param name="descendantId">The node ID for which to find ancestors.</param>
+    /// <returns>List of TransitiveClosure entries representing ancestors.</returns>
+    public async Task<List<TransitiveClosure>> GetAncestorsAsync(int descendantId)
+    {
+        return await appDbContext.TransitiveClosures
+            .Where(tc => tc.DescendantId == descendantId)
+            .OrderBy(tc => tc.Depth) // optional: closest ancestor first
+            .ToListAsync();
+    }
+
+    /// <summary>
+    ///     Deletes a single transitive closure row.
+    /// </summary>
+    /// <param name="closure">The closure row to delete. If null, nothing happens.</param>
+    public async Task DeleteAsync(TransitiveClosure? closure)
+    {
+        if (closure == null)
+            return;
+
+        appDbContext.TransitiveClosures.Remove(closure);
         await appDbContext.SaveChangesAsync();
     }
 }

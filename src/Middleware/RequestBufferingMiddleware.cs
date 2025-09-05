@@ -3,18 +3,11 @@ using System.Text;
 namespace TransitiveClosureTable.Middleware;
 
 /// <summary>
-/// Middleware to capture the raw request body and store it in HttpContext.Items for later use.
-/// Useful for logging or debugging.
+///     Middleware to capture the raw request body and store it in HttpContext.Items for later use.
+///     Useful for logging or debugging.
 /// </summary>
-public class RequestBufferingMiddleware
+public class RequestBufferingMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public RequestBufferingMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         // Enable buffering so the request body can be read multiple times
@@ -24,7 +17,7 @@ public class RequestBufferingMiddleware
         context.Items["RequestBody"] = await ReadRequestBodyAsync(context);
 
         // Continue to the next middleware
-        await _next(context);
+        await next(context);
     }
 
     private static async Task<string> ReadRequestBodyAsync(HttpContext context)
@@ -36,7 +29,7 @@ public class RequestBufferingMiddleware
             using var reader = new StreamReader(
                 context.Request.Body,
                 Encoding.UTF8,
-                detectEncodingFromByteOrderMarks: false,
+                false,
                 leaveOpen: true
             );
 
@@ -51,16 +44,5 @@ public class RequestBufferingMiddleware
         {
             return string.Empty;
         }
-    }
-}
-
-/// <summary>
-/// Extension method to add the middleware to the pipeline.
-/// </summary>
-public static class RequestBufferingMiddlewareExtensions
-{
-    public static IApplicationBuilder UseRequestBufferingMiddleware(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<RequestBufferingMiddleware>();
     }
 }

@@ -6,12 +6,12 @@ using TransitiveClosureTable.Infrastructure.Factories.Contracts;
 namespace TransitiveClosureTable.Application.Services;
 
 /// <summary>
-/// Service for managing Node entities and their transitive closure relationships.
+///     Service for managing Node entities and their transitive closure relationships.
 /// </summary>
 public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
 {
     /// <summary>
-    /// Creates a new node in a tree, optionally as a child of an existing node.
+    ///     Creates a new node in a tree, optionally as a child of an existing node.
     /// </summary>
     /// <param name="name">The name of the new node.</param>
     /// <param name="parentNodeId">Optional parent node ID to attach the new node to.</param>
@@ -21,10 +21,10 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
         using var unitOfWork = unitOfWorkFactory.Create();
 
         await using var transaction = await unitOfWork.BeginTransactionAsync();
-        
+
         var parentNode = await unitOfWork.Nodes.GetByIdAsync(parentNodeId) ??
                          throw new SecureException($"Parent node with id {parentNodeId} not found");
-        
+
         var treeId = parentNode.TreeId;
 
         // Create the new node
@@ -47,13 +47,13 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
     }
 
     /// <summary>
-    /// Deletes a node if it is not a root and has no child nodes.
-    /// Deletes all closure table rows referencing this node.
+    ///     Deletes a node if it is not a root and has no child nodes.
+    ///     Deletes all closure table rows referencing this node.
     /// </summary>
     /// <param name="id">The ID of the node to delete.</param>
     /// <returns>The deleted Node entity.</returns>
     /// <exception cref="SecureException">
-    /// Thrown if attempting to delete a root node or a node that has children.
+    ///     Thrown if attempting to delete a root node or a node that has children.
     /// </exception>
     public async Task<Node> DeleteAsync(int id)
     {
@@ -85,16 +85,11 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
     }
 
     /// <summary>
-    /// Renames an existing node.
+    ///     Renames an existing node.
     /// </summary>
     /// <param name="node">The node entity to rename.</param>
     /// <returns>The renamed Node entity.</returns>
     public Task<Node> RenameAsync(Node node)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Node> CreateAsync(int treeId, string name, int? parentNodeId = null)
     {
         throw new NotImplementedException();
     }

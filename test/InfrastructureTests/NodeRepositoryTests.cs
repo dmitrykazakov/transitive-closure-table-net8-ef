@@ -8,15 +8,15 @@ using TransitiveClosureTable.Infrastructure.Data.Repositories;
 namespace TransitiveClosureTable.Tests.InfrastructureTests;
 
 /// <summary>
-/// Contains unit tests for <see cref="NodeRepository"/> using an in-memory database.
+///     Contains unit tests for <see cref="NodeRepository" /> using an in-memory database.
 /// </summary>
 public class NodeRepositoryTests
 {
     /// <summary>
-    /// Creates a new <see cref="AppDbContext"/> configured with a unique in-memory database.
-    /// Each test uses its own database instance to prevent conflicts.
+    ///     Creates a new <see cref="AppDbContext" /> configured with a unique in-memory database.
+    ///     Each test uses its own database instance to prevent conflicts.
     /// </summary>
-    /// <returns>A new <see cref="AppDbContext"/> instance.</returns>
+    /// <returns>A new <see cref="AppDbContext" /> instance.</returns>
     private static AppDbContext GetDbContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -26,8 +26,8 @@ public class NodeRepositoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NodeRepository.AddAsync(Node)"/> adds a new node correctly.
-    /// After adding, the total count should be 1 and the node's properties should match.
+    ///     Verifies that <see cref="NodeRepository.AddAsync(Node)" /> adds a new node correctly.
+    ///     After adding, the total count should be 1 and the node's properties should match.
     /// </summary>
     [Fact]
     public async Task AddAsync_Should_Add_Node()
@@ -43,9 +43,9 @@ public class NodeRepositoryTests
     }
 
     /// <summary>
-    /// Tests <see cref="NodeRepository.GetByIdAsync(int)"/>.
-    /// Ensures fetching an existing node returns the correct entity,
-    /// and fetching a non-existing node throws a <see cref="SecureException"/>.
+    ///     Tests <see cref="NodeRepository.GetByIdAsync(int)" />.
+    ///     Ensures fetching an existing node returns the correct entity,
+    ///     and fetching a non-existing node throws a <see cref="SecureException" />.
     /// </summary>
     [Fact]
     public async Task GetByIdAsync_Should_Return_Node_Or_Throw()
@@ -64,8 +64,8 @@ public class NodeRepositoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NodeRepository.DeleteAsync(Node)"/> removes a node correctly.
-    /// After deletion, the total count should be 0.
+    ///     Verifies that <see cref="NodeRepository.DeleteAsync(Node)" /> removes a node correctly.
+    ///     After deletion, the total count should be 0.
     /// </summary>
     [Fact]
     public async Task DeleteAsync_Should_Remove_Node()

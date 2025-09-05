@@ -7,15 +7,15 @@ using TransitiveClosureTable.Infrastructure.Data.Repositories;
 namespace TransitiveClosureTable.Tests.InfrastructureTests;
 
 /// <summary>
-/// Contains unit tests for <see cref="TransitiveClosureRepository"/> using an in-memory database.
+///     Contains unit tests for <see cref="TransitiveClosureRepository" /> using an in-memory database.
 /// </summary>
 public class TransitiveClosureRepositoryTests
 {
     /// <summary>
-    /// Creates a new <see cref="AppDbContext"/> configured with a unique in-memory database.
-    /// Each test uses its own database instance to prevent conflicts.
+    ///     Creates a new <see cref="AppDbContext" /> configured with a unique in-memory database.
+    ///     Each test uses its own database instance to prevent conflicts.
     /// </summary>
-    /// <returns>A new <see cref="AppDbContext"/> instance.</returns>
+    /// <returns>A new <see cref="AppDbContext" /> instance.</returns>
     private AppDbContext GetDbContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -25,8 +25,8 @@ public class TransitiveClosureRepositoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TransitiveClosureRepository.AddAsync(TransitiveClosure)"/> adds a new closure correctly.
-    /// After adding, the total count should be 1.
+    ///     Verifies that <see cref="TransitiveClosureRepository.AddAsync(TransitiveClosure)" /> adds a new closure correctly.
+    ///     After adding, the total count should be 1.
     /// </summary>
     [Fact]
     public async Task AddAsync_Should_Add_Closure()
@@ -47,8 +47,8 @@ public class TransitiveClosureRepositoryTests
     }
 
     /// <summary>
-    /// Tests <see cref="TransitiveClosureRepository.GetAncestorsAsync(int)"/>.
-    /// Ensures that fetching ancestors returns the correct ancestor list for a given descendant.
+    ///     Tests <see cref="TransitiveClosureRepository.GetAncestorsAsync(int)" />.
+    ///     Ensures that fetching ancestors returns the correct ancestor list for a given descendant.
     /// </summary>
     [Fact]
     public async Task GetAncestorsAsync_Should_Return_Ancestors()
@@ -65,8 +65,9 @@ public class TransitiveClosureRepositoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TransitiveClosureRepository.DeleteAsync(TransitiveClosure)"/> removes a closure correctly.
-    /// After deletion, the total count should be 0.
+    ///     Verifies that <see cref="TransitiveClosureRepository.DeleteAsync(TransitiveClosure)" /> removes a closure
+    ///     correctly.
+    ///     After deletion, the total count should be 0.
     /// </summary>
     [Fact]
     public async Task DeleteAsync_Should_Remove_Closure()

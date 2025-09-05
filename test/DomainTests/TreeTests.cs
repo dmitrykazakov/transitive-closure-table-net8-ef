@@ -4,12 +4,12 @@ using TransitiveClosureTable.Domain.Entities;
 namespace TransitiveClosureTable.Tests.DomainTests;
 
 /// <summary>
-/// Contains unit tests for the <see cref="Tree"/> domain entity.
+///     Contains unit tests for the <see cref="Tree" /> domain entity.
 /// </summary>
 public class TreeTests
 {
     /// <summary>
-    /// Verifies that a new <see cref="Tree"/> initializes its collections correctly.
+    ///     Verifies that a new <see cref="Tree" /> initializes its collections correctly.
     /// </summary>
     [Fact]
     public void Tree_Should_Initialize_Collections()
@@ -25,7 +25,7 @@ public class TreeTests
     }
 
     /// <summary>
-    /// Verifies that the <see cref="Tree.Name"/> property is correctly assigned during initialization.
+    ///     Verifies that the <see cref="Tree.Name" /> property is correctly assigned during initialization.
     /// </summary>
     [Fact]
     public void Tree_Name_Should_Be_Assigned()

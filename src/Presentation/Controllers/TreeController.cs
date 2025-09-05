@@ -10,11 +10,12 @@ namespace TransitiveClosureTable.Presentation.Controllers;
 public class TreeController(ITreeService treeService) : ControllerBase
 {
     /// <summary>
-    /// Returns the entire tree by name. 
-    /// If the tree doesn't exist, it will be created automatically.
+    ///     Returns the entire tree by name.
+    ///     If the tree doesn't exist, it will be created automatically.
     /// </summary>
     [HttpPost("get")]
-    [SwaggerOperation(Description = "Returns your entire tree. If your tree doesn't exist it will be created automatically.")]
+    [SwaggerOperation(Description =
+        "Returns your entire tree. If your tree doesn't exist it will be created automatically.")]
     public async Task<IActionResult> GetOrCreateTreeAsync([FromQuery] string name)
     {
         var tree = await treeService.GetOrCreateAsync(name);

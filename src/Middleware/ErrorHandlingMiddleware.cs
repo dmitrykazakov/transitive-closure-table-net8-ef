@@ -6,19 +6,12 @@ using TransitiveClosureTable.Domain.Exceptions;
 namespace TransitiveClosureTable.Middleware;
 
 /// <summary>
-/// Middleware to handle exceptions globally and log them to the ExceptionJournal.
+///     Middleware to handle exceptions globally and log them to the ExceptionJournal.
 /// </summary>
-public class ErrorHandlingMiddleware
+public class ErrorHandlingMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public ErrorHandlingMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
     /// <summary>
-    /// Invokes the middleware pipeline and catches unhandled exceptions.
+    ///     Invokes the middleware pipeline and catches unhandled exceptions.
     /// </summary>
     /// <param name="context">The HTTP context.</param>
     /// <param name="exceptionJournalService">Service for logging exceptions.</param>
@@ -26,7 +19,7 @@ public class ErrorHandlingMiddleware
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception ex)
         {
@@ -60,7 +53,7 @@ public class ErrorHandlingMiddleware
 }
 
 /// <summary>
-/// Extension method to add the middleware to the pipeline.
+///     Extension method to add the middleware to the pipeline.
 /// </summary>
 public static class ErrorHandlingMiddlewareExtensions
 {

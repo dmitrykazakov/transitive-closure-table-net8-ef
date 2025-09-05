@@ -4,12 +4,12 @@ using TransitiveClosureTable.Domain.Entities;
 namespace TransitiveClosureTable.Tests.DomainTests;
 
 /// <summary>
-/// Contains unit tests for the <see cref="TransitiveClosure"/> domain entity.
+///     Contains unit tests for the <see cref="TransitiveClosure" /> domain entity.
 /// </summary>
 public class TransitiveClosureTests
 {
     /// <summary>
-    /// Verifies that a new <see cref="TransitiveClosure"/> assigns its properties correctly.
+    ///     Verifies that a new <see cref="TransitiveClosure" /> assigns its properties correctly.
     /// </summary>
     [Fact]
     public void TransitiveClosure_Should_Assign_Properties()
@@ -31,8 +31,9 @@ public class TransitiveClosureTests
     }
 
     /// <summary>
-    /// Verifies that the <see cref="TransitiveClosure.Ancestor"/> and <see cref="TransitiveClosure.Descendant"/> properties
-    /// are null by default when not assigned.
+    ///     Verifies that the <see cref="TransitiveClosure.Ancestor" /> and <see cref="TransitiveClosure.Descendant" />
+    ///     properties
+    ///     are null by default when not assigned.
     /// </summary>
     [Fact]
     public void TransitiveClosure_Ancestor_And_Descendant_Can_Be_Null()

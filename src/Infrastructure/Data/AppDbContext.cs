@@ -4,33 +4,33 @@ using TransitiveClosureTable.Domain.Entities;
 namespace TransitiveClosureTable.Infrastructure.Data;
 
 /// <summary>
-/// Entity Framework Core DbContext for the Transitive Closure Table system.
-/// Manages Trees, Nodes, TransitiveClosures, and ExceptionJournals.
+///     Entity Framework Core DbContext for the Transitive Closure Table system.
+///     Manages Trees, Nodes, TransitiveClosures, and ExceptionJournals.
 /// </summary>
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     /// <summary>
-    /// DbSet for <see cref="Tree"/> entities.
+    ///     DbSet for <see cref="Tree" /> entities.
     /// </summary>
     public DbSet<Tree> Trees { get; set; }
 
     /// <summary>
-    /// DbSet for <see cref="Node"/> entities.
+    ///     DbSet for <see cref="Node" /> entities.
     /// </summary>
     public DbSet<Node> Nodes { get; set; }
 
     /// <summary>
-    /// DbSet for <see cref="TransitiveClosure"/> entities.
+    ///     DbSet for <see cref="TransitiveClosure" /> entities.
     /// </summary>
     public DbSet<TransitiveClosure> TransitiveClosures { get; set; }
 
     /// <summary>
-    /// DbSet for <see cref="ExceptionJournal"/> entities.
+    ///     DbSet for <see cref="ExceptionJournal" /> entities.
     /// </summary>
     public DbSet<ExceptionJournal> ExceptionJournals { get; set; }
 
     /// <summary>
-    /// Configures the EF Core model: primary keys, relationships, constraints, and indexes.
+    ///     Configures the EF Core model: primary keys, relationships, constraints, and indexes.
     /// </summary>
     /// <param name="modelBuilder">The EF Core model builder.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,14 +44,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(t => t.Name).IsRequired().HasColumnOrder(1);
             entity.HasIndex(t => t.Name).IsUnique();
             entity.HasMany(t => t.Nodes)
-                  .WithOne(n => n.Tree)
-                  .HasForeignKey(n => n.TreeId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(n => n.Tree)
+                .HasForeignKey(n => n.TreeId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasMany(t => t.TransitiveClosures)
-                  .WithOne(tc => tc.Tree)
-                  .HasForeignKey(tc => tc.TreeId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(tc => tc.Tree)
+                .HasForeignKey(tc => tc.TreeId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // --- Node ---
@@ -63,9 +63,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(n => n.Name).IsRequired().HasMaxLength(256).HasColumnOrder(2);
 
             entity.HasOne(n => n.Tree)
-                  .WithMany(t => t.Nodes)
-                  .HasForeignKey(n => n.TreeId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(t => t.Nodes)
+                .HasForeignKey(n => n.TreeId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // --- TransitiveClosure ---
@@ -80,22 +80,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
             // Foreign key to Ancestor node
             entity.HasOne(tc => tc.Ancestor)
-                  .WithMany()
-                  .HasForeignKey(tc => tc.AncestorId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany()
+                .HasForeignKey(tc => tc.AncestorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Foreign key to Descendant node
             entity.HasOne(tc => tc.Descendant)
-                  .WithMany()
-                  .HasForeignKey(tc => tc.DescendantId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany()
+                .HasForeignKey(tc => tc.DescendantId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Foreign key to Tree for tree isolation
             entity.HasOne(tc => tc.Tree)
-                  .WithMany(t => t.TransitiveClosures)
-                  .HasForeignKey(tc => tc.TreeId)
-                  .OnDelete(DeleteBehavior.Cascade);
-            
+                .WithMany(t => t.TransitiveClosures)
+                .HasForeignKey(tc => tc.TreeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Indexes for performance
             entity.HasIndex(tc => tc.AncestorId);
             entity.HasIndex(tc => tc.DescendantId);
