@@ -53,9 +53,6 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
 
         // Remove from DbContext
         appDbContext.TransitiveClosures.RemoveRange(closures);
-
-        // Persist changes
-        await appDbContext.SaveChangesAsync();
     }
 
 

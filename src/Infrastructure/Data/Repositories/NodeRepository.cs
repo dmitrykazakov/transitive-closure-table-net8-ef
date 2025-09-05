@@ -28,10 +28,10 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     ///     Deletes a node from the database.
     /// </summary>
     /// <param name="node">The node to delete.</param>
-    public async Task DeleteAsync(Node node)
+    public Task DeleteAsync(Node node)
     {
         appDbContext.Nodes.Remove(node);
-        await appDbContext.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -41,7 +41,6 @@ public class NodeRepository(AppDbContext appDbContext) : INodeRepository
     public async Task AddAsync(Node node)
     {
         await appDbContext.Nodes.AddAsync(node);
-        await appDbContext.SaveChangesAsync();
     }
 
     /// <summary>

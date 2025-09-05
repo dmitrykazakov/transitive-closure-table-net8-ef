@@ -15,10 +15,10 @@ public class ExceptionJournalRepository(AppDbContext appDbContext) : IExceptionJ
     ///     Adds a new exception entry to the database and commits the changes.
     /// </summary>
     /// <param name="entry">The <see cref="ExceptionJournal" /> entry to add.</param>
-    public async Task AddAsync(ExceptionJournal entry)
+    public Task AddAsync(ExceptionJournal entry)
     {
         appDbContext.ExceptionJournals.Add(entry);
-        await appDbContext.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 
     /// <summary>
