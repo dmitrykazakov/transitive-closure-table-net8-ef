@@ -3,23 +3,22 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ImplicitUsings>enable</ImplicitUsings>   
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Domain\Validators\**" />
-    <Compile Remove="Migrations\**" />
-    <Compile Remove="TransitiveClosureTable.Tests\**" />
+    <Compile Remove="Task\**" />
+    <Compile Remove="Tests\**" />
     <Content Remove="Domain\Validators\**" />
-    <Content Remove="Migrations\**" />
-    <Content Remove="TransitiveClosureTable.Tests\**" />
+    <Content Remove="Task\**" />
+    <Content Remove="Tests\**" />
     <EmbeddedResource Remove="Domain\Validators\**" />
-    <EmbeddedResource Remove="Migrations\**" />
-    <EmbeddedResource Remove="TransitiveClosureTable.Tests\**" />
+    <EmbeddedResource Remove="Task\**" />
+    <EmbeddedResource Remove="Tests\**" />
     <None Remove="Domain\Validators\**" />
-    <None Remove="Migrations\**" />
-    <None Remove="TransitiveClosureTable.Tests\**" />
+    <None Remove="Task\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,21 +28,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="8.6.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
-    <PackageReference Include="xunit.extensibility.core" Version="2.5.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Dto\" />
   </ItemGroup>
 
 </Project>

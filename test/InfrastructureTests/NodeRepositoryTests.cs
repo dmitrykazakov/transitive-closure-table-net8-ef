@@ -5,7 +5,7 @@ using TransitiveClosureTable.Domain.Exceptions;
 using TransitiveClosureTable.Infrastructure.Data;
 using TransitiveClosureTable.Infrastructure.Data.Repositories;
 
-namespace TransitiveClosureTable.Tests.InfrastructureTests
+namespace TransitiveClosureTable.Tests.InfrastructureTests;
 
 /// <summary>
 /// Contains unit tests for <see cref="NodeRepository"/> using an in-memory database.
