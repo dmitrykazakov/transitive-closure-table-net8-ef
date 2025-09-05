@@ -45,4 +45,12 @@ public interface ITransitiveClosureRepository
     /// </summary>
     /// <param name="transitiveClosures">Collection of closures to delete.</param>
     Task RemoveRangeAsync(IEnumerable<TransitiveClosure> transitiveClosures);
+
+    /// <summary>
+    /// Adds a transitive closure row using a node ID and optional parent node ID.
+    /// Typically used for creating closure entries based on parent-child relationships.
+    /// </summary>
+    /// <param name="nodeId">The node ID to add to tree.</param>
+    /// <param name="parentNodeId">Parent node ID to establish ancestor relationship.</param>
+    Task AddAsync(int nodeId, int parentNodeId);
 }

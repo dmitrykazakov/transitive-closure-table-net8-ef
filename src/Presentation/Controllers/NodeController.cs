@@ -20,7 +20,7 @@ public class NodeController(INodeService nodeService) : ControllerBase
                                     "If parentNodeId is null, the node will be created as a root.")]
     public async Task<IActionResult> CreateNode([FromBody] CreateNodeRequestDto request)
     {
-        var node = await nodeService.CreateAsync(request.TreeId, request.Name, request.ParentNodeId);
+        var node = await nodeService.CreateAsync(request.Name, request.ParentNodeId);
         return CreatedAtAction(nameof(CreateNode), new { id = node.Id }, node);
     }
 

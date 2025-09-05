@@ -13,14 +13,19 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
     /// <summary>
     /// Creates a new node in a tree, optionally as a child of an existing node.
     /// </summary>
-    /// <param name="treeId">The tree ID where the node will be added.</param>
     /// <param name="name">The name of the new node.</param>
     /// <param name="parentNodeId">Optional parent node ID to attach the new node to.</param>
     /// <returns>The newly created Node entity.</returns>
-    public async Task<Node> CreateAsync(int treeId, string name, int? parentNodeId = null)
+    public async Task<Node> CreateAsync(string name, int parentNodeId)
     {
         using var unitOfWork = unitOfWorkFactory.Create();
+
         await using var transaction = await unitOfWork.BeginTransactionAsync();
+        
+        var parentNode = await unitOfWork.Nodes.GetByIdAsync(parentNodeId) ??
+                         throw new SecureException($"Parent node with id {parentNodeId} not found");
+        
+        var treeId = parentNode.TreeId;
 
         // Create the new node
         var node = new Node
@@ -32,35 +37,12 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
         await unitOfWork.Nodes.AddAsync(node);
         await unitOfWork.CommitAsync(); // ensure node.Id is generated
 
-        // 1. Add self-reference in closure table
-        await unitOfWork.TransitiveClosures.AddAsync(new TransitiveClosure
-        {
-            TreeId = treeId,
-            AncestorId = node.Id,
-            DescendantId = node.Id,
-            Depth = 0
-        });
+        // Add ancestors and descendants entries
 
-        // 2. Add ancestor entries if parentNodeId is specified
-        if (parentNodeId.HasValue)
-        {
-            var parentAncestors = await unitOfWork.TransitiveClosures.GetAncestorsAsync(parentNodeId.Value);
-
-            foreach (var ancestor in parentAncestors)
-            {
-                await unitOfWork.TransitiveClosures.AddAsync(new TransitiveClosure
-                {
-                    TreeId = treeId,
-                    AncestorId = ancestor.AncestorId,
-                    DescendantId = node.Id,
-                    Depth = ancestor.Depth + 1
-                });
-            }
-        }
-
+        await unitOfWork.TransitiveClosures.AddAsync(node.Id, parentNodeId);
         await unitOfWork.CommitAsync();
-        await transaction.CommitAsync();
 
+        await transaction.CommitAsync();
         return node;
     }
 
@@ -108,6 +90,11 @@ public class NodeService(IUnitOfWorkFactory unitOfWorkFactory) : INodeService
     /// <param name="node">The node entity to rename.</param>
     /// <returns>The renamed Node entity.</returns>
     public Task<Node> RenameAsync(Node node)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Node> CreateAsync(int treeId, string name, int? parentNodeId = null)
     {
         throw new NotImplementedException();
     }

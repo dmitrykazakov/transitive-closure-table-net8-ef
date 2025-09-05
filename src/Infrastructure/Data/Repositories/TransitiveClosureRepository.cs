@@ -68,6 +68,54 @@ public class TransitiveClosureRepository(AppDbContext appDbContext) : ITransitiv
         appDbContext.TransitiveClosures.RemoveRange(transitiveClosures);
         await appDbContext.SaveChangesAsync();
     }
+    
+    /// <summary>
+    /// Adds transitive closure records for a new node.
+    /// Inserts:
+    /// 1) Self-reference (Depth = 0).
+    /// 2) All ancestors of parent + new descendant with Depth + 1.
+    /// </summary>
+    /// <param name="nodeId">The new node's ID (descendant).</param>
+    /// <param name="parentNodeId">The parent node's ID. If null, node is root.</param>
+    public async Task AddAsync(int nodeId, int parentNodeId)
+    {
+        
+        // Get parent's self-reference to extract TreeId
+        var parentClosure = await appDbContext.TransitiveClosures
+            .SingleAsync(tc => tc.AncestorId == parentNodeId && tc.DescendantId == parentNodeId);
+
+        var treeId = parentClosure.TreeId;
+
+        // Get all ancestors of parent
+        var parentAncestors = await appDbContext.TransitiveClosures
+            .Where(tc => tc.DescendantId == parentNodeId)
+            .ToListAsync();
+
+        // Build ancestor → child closures in one pass
+        var newClosures = parentAncestors.Select(ancestor => new TransitiveClosure
+        {
+            TreeId = treeId,
+            AncestorId = ancestor.AncestorId,
+            DescendantId = nodeId,
+            Depth = ancestor.Depth + 1
+        }).ToList();
+
+        await appDbContext.TransitiveClosures.AddRangeAsync(newClosures);
+
+
+        // Add self-reference
+        var selfClosure = new TransitiveClosure
+        {
+            TreeId = treeId,
+            AncestorId = nodeId,
+            DescendantId = nodeId,
+            Depth = 0
+        };
+
+        await appDbContext.TransitiveClosures.AddAsync(selfClosure);
+
+        await appDbContext.SaveChangesAsync();
+    }
 
     /// <summary>
     /// Adds a new transitive closure row.

@@ -6,11 +6,6 @@
 public class CreateNodeRequestDto
 {
     /// <summary>
-    /// The ID of the tree where the new node will be added.
-    /// </summary>
-    public required int TreeId { get; set; }
-
-    /// <summary>
     /// The name of the new node.
     /// </summary>
     public required string Name { get; set; }

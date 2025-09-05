@@ -25,9 +25,8 @@ public interface INodeService
     /// <summary>
     /// Creates a new node in the specified tree, optionally as a child of an existing node.
     /// </summary>
-    /// <param name="treeId">The tree ID where the node will be added.</param>
     /// <param name="name">The name of the new node.</param>
-    /// <param name="parentNodeId">Optional parent node ID to attach the new node to.</param>
+    /// <param name="parentNodeId">Parent node ID to attach the new node to.</param>
     /// <returns>The newly created <see cref="Node"/> entity.</returns>
-    Task<Node> CreateAsync(int treeId, string name, int? parentNodeId = null);
+    Task<Node> CreateAsync(string name, int parentNodeId);
 }
